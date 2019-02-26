@@ -2,20 +2,23 @@ package com.example.jdktest.sync;
 
 class VoTest2 {
   //private int cnt = 0;
-  private volatile int cnt = 0;
+  //private volatile int cnt = 0;
+  private volatile int[] cnt = new int[100];  //数组用volatle只是其引用有volatile语义
   public void incCnt(int l) throws InterruptedException {
-    Thread.sleep(200);
+    Thread.sleep(1000);
+    System.out.println("Inc started ");
     for (int i=0; i<l; i++) {
-      cnt++;
+      cnt[50]++;
     }
-    System.out.println("INC Complete " + cnt);
+    System.out.println("INC Complete " + cnt[50]);
   }
 
   public void waitSingal(int l) throws InterruptedException {
-    while(cnt != l) {
+    System.out.println("Wait started ");
+    while(cnt[50] != l) {
       //不用volatile，这个线程永不结束
     }
-    System.out.println("Wait End " + cnt);
+    System.out.println("Wait for " + l + " End ");
   }
 }
 
@@ -33,7 +36,7 @@ public class VolatileDelay {
 
     Thread tInc = new Thread(()-> {
       try {
-        voTest.incCnt(1000);
+        voTest.incCnt(5000);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
@@ -42,7 +45,7 @@ public class VolatileDelay {
     tWait.start();
     tInc.start();
 
-    tInc.join();
     tWait.join();
+    tInc.join();
   }
 }
