@@ -10,7 +10,7 @@ class VoTest2 {
   private static final sun.misc.Unsafe U;
   static {
     try {
-      System.out.println("UUU");
+      System.out.println("ffffggg");
       Field unsafeFld = Unsafe.class.getDeclaredField("theUnsafe");
       unsafeFld.setAccessible(true);
       U = (Unsafe)unsafeFld.get(null);
@@ -21,15 +21,16 @@ class VoTest2 {
   }
 
   //private int cnt = 0;   //1  100%卡住
-  private volatile int cnt = 0;     //2   100% 不卡
+  //private volatile int cnt = 0;     //2   100% 不卡
   //private int[] cnt = new int[100];    //3  100%卡住
-  //private volatile int[] cnt = new int[100];  //4   30% 卡住
+  private volatile int[] cnt = new int[100];  //4   30% 卡住,还得配合getAndAddInt，getIntVolatile
   public void incCnt(int l) throws InterruptedException {
     Thread.sleep(1000);
     System.out.println("Inc started ");
     for (int i=0; i<l; i++) {
       //cnt[50]++;
-      cnt++;
+      U.getAndAddInt(cnt, THIS_SHIFT, 1);
+      //cnt++;
     }
     System.out.println("INC Complete " + l);
   }
@@ -37,8 +38,8 @@ class VoTest2 {
   public void waitSingal(int l) throws InterruptedException {
     System.out.println("Wait started ");
     int tmp=0;
-    //while(U.getIntVolatile(cnt, THIS_SHIFT) != l) {  //也不行
-    while((tmp=cnt) != l) {
+    while(U.getIntVolatile(cnt, THIS_SHIFT) != l) {
+      //while((tmp=cnt) != l) {
       //不用volatile，这个线程永不结束
       //System.out.println(tmp);
     }
@@ -52,7 +53,7 @@ public class VolatileDelay {
     VoTest2 voTest = new VoTest2();
     Thread tWait = new Thread(() -> {
       try {
-        voTest.waitSingal(500);
+        voTest.waitSingal(678);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }

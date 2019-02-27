@@ -59,20 +59,17 @@ public class TimeSortTest {
     System.out.println(Arrays.toString(arr));
   }
 
+  /**
+   *
+   */
   private void insertionSort(int[] arr, int left, int right) {
     for (int i = left + 1; i <= right; i++)
     {
       int temp = arr[i];
       int j = i - 1;
-      try {
-        while (j >= left && arr[j] > temp) {
-          arr[j + 1] = arr[j];
-          j--;
-        }
-      } catch (Exception e) {
-        System.out.println(j);
-        System.out.println(left);
-        e.printStackTrace();
+      while (j >= left && arr[j] > temp) {
+        arr[j + 1] = arr[j];
+        j--;
       }
       arr[j+1] = temp;
     }
