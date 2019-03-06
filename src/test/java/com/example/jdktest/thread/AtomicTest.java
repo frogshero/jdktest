@@ -1,4 +1,4 @@
-package com.example.jdktest.sync;
+package com.example.jdktest.thread;
 
 import sun.misc.Unsafe;
 
