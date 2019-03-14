@@ -10,12 +10,29 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 @RunWith(JUnit4.class)
 public class ConcurrentMapTest {
 
   private void log(Object o) {System.out.println(o);}
+
+/**
+ * 更新值
+ static final <K,V> boolean casTabAt(Node<K,V>[] tab, int i,
+                                      Node<K,V> c, Node<K,V> v) {
+      return U.compareAndSwapObject(tab, ((long)i << ASHIFT) + ABASE, c, v);
+  }
+ tab：值数组
+ c：原值
+ v: 新值
+
+ Class<?> ak = Node[].class;
+ ABASE = U.arrayBaseOffset(ak);    //arrayBaseOffset：传入数组类,得到数组第一个元素的偏移地址
+ int scale = U.arrayIndexScale(ak);    //arrayIndexScale：可以获取数组中元素的增量地址
+ if ((scale & (scale - 1)) != 0)
+ throw new Error("data type scale not a power of two");
+ ASHIFT = 31 - Integer.numberOfLeadingZeros(scale);
+*/
 
   @Test
   public void test() throws InterruptedException, NoSuchFieldException {
@@ -45,26 +62,6 @@ public class ConcurrentMapTest {
       }
       Thread.sleep(3000); //等待线程结束
       log(map.size());  //9998 ???
-
-      int lack = 0;
-      for (int i=0; i<list.size(); i++) {
-        if (!map.containsKey(list.get(i))) {
-          log(ii + "-----" + i + "-------" + list.get(i));
-          lack++;
-        }
-      }
-      if (lack > 2) {
-        log("----------------------------------------------------------");
-        log(list);
-        log("----------------------------------------------------------");
-        log(map.keySet());
-        log("----------------------------------------------------------");
-      }
-      for (String k: map.keySet()) {
-        if (list.indexOf(k) < 0) {
-          log(ii + "--------------------" + k);
-        }
-      }
     }
   }
 }

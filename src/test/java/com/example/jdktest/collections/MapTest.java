@@ -37,13 +37,13 @@ public class MapTest {
    * 2145430000 & 64
    * 2145420000 & 64
    * 2145410000 & 64
-   * 这些获得的数据下标很可能重复，保留高位再和地位异或可以减少hash值的重复
+   * 这些的数据高位不同，但是地位一样导致hash重复，保留高位再和地位异或可以减少hash值的重复
    */
   /**
    * 元素的数组下标=(数组size - 1) & hash
-   * threshold = loadFactor * size
+   * threshold = loadFactor * size  //threshold：要重新分配数组大小的阈值，loadFactor：要resize的百分比
    * 到达threshold后翻倍
-   * 怎么resize？循环把旧数组赋值到新数组
+   * 怎么resize？循环把旧数组赋值到新数组 //不能用System.arrayCopy
    */
 
   @Test
@@ -68,10 +68,19 @@ public class MapTest {
 
   @Test
   public void testRandom() {
+    String key = "";
     HashMap<String, String> map = new HashMap<>();
-    for (int i = 0; i < 1000000; i++) {
-      map.put(UUID.randomUUID().toString(), "");
+    for (int i = 0; i < 100; i++) {
+      String k = UUID.randomUUID().toString();
+      map.put(k, "");
+      if (i==50) {
+        key = k;
+      }
     }
+
+    String ret = map.get(key); //3个比较: hash && == && equal
+
+    map.remove(key); //处理列表或treeNode
     log("----------------------");
   }
 
